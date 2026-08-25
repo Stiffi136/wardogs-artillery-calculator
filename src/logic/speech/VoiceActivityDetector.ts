@@ -5,7 +5,7 @@ export class VoiceActivityDetector {
   private silenceMs = 0
   private readonly threshold: number
   private readonly silenceDurationMs: number
-  constructor(options: VadOptions = {}) { this.threshold = options.speechThreshold ?? 0.03; this.silenceDurationMs = options.silenceDurationMs ?? 700 }
+  constructor(options: VadOptions = {}) { this.threshold = options.speechThreshold ?? 0.012; this.silenceDurationMs = options.silenceDurationMs ?? 1000 }
   process(audio: Float32Array, sampleRate: number): 'speech-start' | 'speech-end' | null {
     let sum = 0; for (const sample of audio) sum += sample * sample
     const rms = Math.sqrt(sum / Math.max(audio.length, 1)); const duration = audio.length / sampleRate * 1000
