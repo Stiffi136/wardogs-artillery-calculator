@@ -11,6 +11,12 @@ export type SpeechCommand =
 
 const artilleryWords = /(artillerie|geschütz|geschuetz|kanone|quelle)/
 const targetWords = /(ziel|zielpunkt)/
+const actionWords: Array<[RegExp, Extract<SpeechCommand, { type: 'calculate' | 'speak' | 'reset' | 'stop' }>['type']]> = [
+  [/\b(zurücksetz(?:en|e)?|zuruecksetz(?:en|e)?|reset(?:te)?|neu(?:start(?:en)?)?)\b/, 'reset'],
+  [/\b(stop|stopp(?:en)?|anhalten|abbrechen)\b/, 'stop'],
+  [/\b(vorles(?:en|e)?|sprich|ansag(?:en|e)?)\b/, 'speak'],
+  [/\b(berechn(?:en|e)?|ergebnis(?:se)?|auswert(?:en|e)?)\b/, 'calculate'],
+]
 function coordinatesAfter(text: string, matcher: RegExp, until?: RegExp): Coordinates | undefined | 'incomplete' {
   const match = text.match(matcher)
   if (!match || match.index === undefined) return undefined
@@ -21,11 +27,8 @@ function coordinatesAfter(text: string, matcher: RegExp, until?: RegExp): Coordi
 }
 
 export function parseSpeechCommand(rawText: string): SpeechCommand {
-  const text = rawText.toLowerCase().replace(/[.!?]/g, ' ')
-  if (/\b(zurücksetzen|zuruecksetzen|reset)\b/.test(text)) return { type: 'reset' }
-  if (/\b(stop|anhalten)\b/.test(text)) return { type: 'stop' }
-  if (/\b(vorlesen|sprich)\b/.test(text)) return { type: 'speak' }
-  if (/\b(berechnen|ergebnis)\b/.test(text)) return { type: 'calculate' }
+  const text = rawText.toLowerCase().normalize('NFC').replace(/[^\p{L}\p{N},.-]+/gu, ' ').trim()
+  for (const [matcher, type] of actionWords) if (matcher.test(text)) return { type }
   const artillery = coordinatesAfter(text, artilleryWords, targetWords)
   const target = coordinatesAfter(text, targetWords, artilleryWords)
   if (target === 'incomplete' && parseNumbers(text).length === 0) return { type: 'select-coordinates', subject: 'target' }
