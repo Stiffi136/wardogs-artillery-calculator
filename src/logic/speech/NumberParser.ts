@@ -1,0 +1,43 @@
+const units: Record<string, number> = {
+  null: 0, eins: 1, ein: 1, eine: 1, zwei: 2, drei: 3, vier: 4, fünf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9,
+  zehn: 10, elf: 11, zwölf: 12, dreizehn: 13, vierzehn: 14, fünfzehn: 15, sechzehn: 16, siebzehn: 17, achtzehn: 18, neunzehn: 19,
+  zwanzig: 20, dreißig: 30, vierzig: 40, fünfzig: 50, sechzig: 60, siebzig: 70, achtzig: 80, neunzig: 90,
+}
+
+function wordNumber(word: string): number | undefined {
+  const clean = word.toLowerCase().replace(/[.,!?]/g, '')
+  if (clean in units) return units[clean]
+  if (clean.includes('hundert')) {
+    const [prefix, suffix] = clean.split('hundert')
+    return (prefix ? (units[prefix] ?? 1) : 1) * 100 + (suffix ? (wordNumber(suffix) ?? 0) : 0)
+  }
+  const match = clean.match(/^(ein|zwei|drei|vier|fünf|sechs|sieben|acht|neun)und(zwanzig|dreißig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig)$/)
+  return match ? units[match[1]] + units[match[2]] : undefined
+}
+
+/** Parses spoken German numeric forms; adjacent single digits stay separate coordinates. */
+export function parseNumbers(text: string): number[] {
+  const normalized = text
+    .toLowerCase()
+    // Keep written decimal commas (for example "82,9") as part of one number.
+    .replace(/(\d),(\d)/g, '$1.$2')
+    .replace(/,/g, ' ')
+    .replace(/[;:!?]/g, ' ')
+  const tokens = normalized.split(/\s+/).filter(Boolean)
+  const values: number[] = []
+  for (let index = 0; index < tokens.length; index += 1) {
+    const token = tokens[index]
+    const numeric = Number(token.replace(',', '.'))
+    if (token !== '' && Number.isFinite(numeric)) { values.push(numeric); continue }
+    const parsed = wordNumber(token)
+    if (parsed !== undefined) {
+      if ((tokens[index + 1] === 'komma' || tokens[index + 1] === 'punkt') && tokens[index + 2]) {
+        const decimalToken = tokens[index + 2]
+        const decimal = /^\d+$/.test(decimalToken) ? decimalToken : String(wordNumber(decimalToken) ?? '')
+        if (decimal) { values.push(Number(`${parsed}.${decimal}`)); index += 2; continue }
+      }
+      values.push(parsed)
+    }
+  }
+  return values
+}
