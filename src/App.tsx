@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   calculateArtillery,
+  WEAPON_IDS,
+  type WeaponId,
   type Coordinates,
   validateCoordinates,
 } from "./logic/calculator/ArtilleryCalculator";
@@ -40,6 +42,7 @@ function App() {
       : "de",
   );
   const t = translate[language];
+  const [weaponId, setWeaponId] = useState<WeaponId>("mortar");
   const [form, setForm] = useState<Form>(() => {
     try {
       return {
@@ -78,8 +81,8 @@ function App() {
       };
     return validateCoordinates(artillery) || validateCoordinates(target)
       ? null
-      : calculateArtillery(artillery, target);
-  }, [form]);
+      : calculateArtillery(artillery, target, weaponId);
+  }, [form, weaponId]);
   // SpeechSession outlives individual renders, so commands must read the latest result via a ref.
   const solutionRef = useRef(solution);
   solutionRef.current = solution;
@@ -103,9 +106,7 @@ function App() {
   const speak = useCallback(() => {
     const currentSolution = solutionRef.current;
     if (!currentSolution) {
-      setNotice(
-        t.validCoordinates,
-      );
+      setNotice(t.validCoordinates);
       return;
     }
     const distance = fmt(
@@ -167,11 +168,13 @@ function App() {
         setStatus(`✓ ${label} übernommen`);
         feedback.current.success();
         say(
-          t.ttsSubjectCoordinatesUnderstood(label, coordinates.x, coordinates.y),
+          t.ttsSubjectCoordinatesUnderstood(
+            label,
+            coordinates.x,
+            coordinates.y,
+          ),
         );
-        setNotice(
-          t.coordinatesAccepted(label, coordinates.x, coordinates.y),
-        );
+        setNotice(t.coordinatesAccepted(label, coordinates.x, coordinates.y));
       };
       if (command.type === "select-coordinates") {
         const label = command.subject === "target" ? t.target : t.artillery;
@@ -237,7 +240,9 @@ function App() {
         const hint = expected
           ? `Bitte nenne X und Y für ${expected === "target" ? "das Ziel" : "die Artillerie"}.`
           : command.type === "incomplete"
-            ? t.incompleteCoordinates(command.message.includes("Artillerie") ? t.artillery : t.target)
+            ? t.incompleteCoordinates(
+                command.message.includes("Artillerie") ? t.artillery : t.target,
+              )
             : t.noCommand;
         setStatus(t.commandNotUnderstood);
         setNotice(hint);
@@ -272,7 +277,9 @@ function App() {
             state === "processing"
               ? t.processing
               : expected
-                ? t.waitingForCoordinates(expected === "target" ? t.target : t.artillery)
+                ? t.waitingForCoordinates(
+                    expected === "target" ? t.target : t.artillery,
+                  )
                 : "🎤 " + t.listen,
           );
         },
@@ -295,9 +302,7 @@ function App() {
       setModelLoading(false);
       setStatus("⚠️ Sprachsteuerung nicht verfügbar");
       setNotice(
-        error instanceof Error
-          ? error.message
-          : t.speechUnavailableMessage,
+        error instanceof Error ? error.message : t.speechUnavailableMessage,
       );
     }
   };
@@ -353,7 +358,7 @@ function App() {
         <div className="meter-head">
           <span>{t.microphoneLevel}</span>
           <strong className={speechOn && vadActive ? "vad-active" : ""}>
-            {speechOn ? (vadActive ? t.vadActive : t.ready)  : t.off}
+            {speechOn ? (vadActive ? t.vadActive : t.ready) : t.off}
           </strong>
         </div>
         <div className="meter-track" aria-hidden="true">
@@ -369,6 +374,21 @@ function App() {
               : t.waitingForSpeech
             : t.startSpeechControl}
         </small>
+      </section>
+      <section className="weapon-picker">
+        <label>
+          {t.weapon}
+          <select
+            value={weaponId}
+            onChange={(event) => setWeaponId(event.target.value as WeaponId)}
+          >
+            {WEAPON_IDS.map((id) => (
+              <option key={id} value={id}>
+                {id === "mortar" ? t.mortar : t.howitzer}
+              </option>
+            ))}
+          </select>
+        </label>
       </section>
       <section className="coordinate-grid">
         <Coordinate
@@ -388,9 +408,7 @@ function App() {
         <button
           className="primary"
           onClick={() =>
-            setNotice(
-              solution ? t.solutionUpdated : t.allCoordinatesRequired,
-            )
+            setNotice(solution ? t.solutionUpdated : t.allCoordinatesRequired)
           }
         >
           {t.calculate} <span>→</span>
@@ -412,21 +430,35 @@ function App() {
           name={t.distance}
           value={
             solution
-              ? `${fmt(solution.distanceKilometers, languages[language].locale)} km`
+              ? fmt(solution.distanceMeters, languages[language].locale) + " m"
               : "—"
           }
           sub={
             solution
-              ? `${fmt(solution.distanceMeters, languages[language].locale, 0)} m · ${fmt(solution.distanceUnits, languages[language].locale)} ${t.units}`
+              ? fmt(solution.distanceKilometers, languages[language].locale, 2) + " km · " + fmt(solution.distanceUnits, languages[language].locale) + " " + t.units
               : t.enterCoordinates
           }
           major
         />
         <Result
+          name={t.mil}
+          value={
+            solution?.elevationSolutions.length
+              ? solution.elevationSolutions.map(({ mil }) => fmt(mil, languages[language].locale, 0)).join(" / ") + " mil"
+              : "—"
+          }
+          sub={solution?.elevationSolutions.length
+            ? solution.elevationSolutions.map(({ arc }) => arc === "low" ? t.lowArc : arc === "high" ? t.highArc : t.milElevation).join(" / ")
+            : t.outOfRange}
+          major
+        />
+        <Result
           name={t.direction}
-          value={solution ? `${Math.round(solution.azimuthDegrees)}°` : "—"}
+          value={solution ? `${fmt(solution.azimuthDegrees, languages[language].locale, 1)}°` : "—"}
           sub={
-            solution ? compass(solution.azimuthDegrees, language) : t.azimuthFromNorth
+            solution
+              ? compass(solution.azimuthDegrees, language)
+              : t.azimuthFromNorth
           }
           major
         />
@@ -552,8 +584,10 @@ function Result({
   );
 }
 function compass(degrees: number, language: Language) {
-  return (language === "en" ? ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] : ["N", "NO", "O", "SO", "S", "SW", "W", "NW"])[
-    Math.round(degrees / 45) % 8
-  ];
+  return (
+    language === "en"
+      ? ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+      : ["N", "NO", "O", "SO", "S", "SW", "W", "NW"]
+  )[Math.round(degrees / 45) % 8];
 }
 export default App;

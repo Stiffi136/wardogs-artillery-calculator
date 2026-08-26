@@ -1,5 +1,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Rajdhani:wght@500;600;700&display=swap");
 @import "tailwindcss";
+.weapon-picker {
+  margin: 0 0 12px;
+}
+.weapon-picker label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #98a497;
+  font: 700 0.8rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.08em;
+}
+.weapon-picker select {
+  flex: 1;
+  max-width: 220px;
+  background: #131814;
+  border: 1px solid #40503d;
+  border-radius: 3px;
+  color: #edf2e6;
+  padding: 8px;
+  font: 600 1rem Rajdhani, sans-serif;
+}
 * {
   box-sizing: border-box;
 }
@@ -117,11 +139,17 @@ button {
 }
 .results {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 10px;
 }
 .result {
   padding: 14px;
+}
+.main-result {
+  grid-column: span 2;
+}
+.result:not(.main-result) {
+  grid-column: span 3;
 }
 .result span {
   display: block;
@@ -203,9 +231,14 @@ footer {
   }
 }
 @media (max-width: 360px) {
-  .coordinate-grid,
-  .results {
+  .coordinate-grid {
     grid-template-columns: 1fr;
+  }
+  .results .main-result {
+    padding: 10px;
+  }
+  .results .main-result strong {
+    font-size: clamp(1.5rem, 7vw, 2.2rem);
   }
   .actions {
     flex-direction: column;
