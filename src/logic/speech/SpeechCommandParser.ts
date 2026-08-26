@@ -11,7 +11,9 @@ export type SpeechCommand =
 
 const artilleryWords =
   /(artillerie|geschütz|geschuetz|kanone|quelle|artillery|gun|cannon|source)/;
-const targetWords = /(ziel|zielpunkt|target)/;
+// Whisper occasionally renders the short German word "Ziel" as "see you".
+// Treat that phonetic false positive as the target command as well.
+const targetWords = /(ziel|zielpunkt|target|see\s+you)/;
 const actionWords: Array<
   [
     RegExp,

@@ -63,7 +63,7 @@ export class WhisperEngine implements SpeechEngine {
         type: "initialize",
         model: this.options.model ?? "onnx-community/whisper-base",
         device: this.options.device ?? "webgpu",
-        language: this.options.language ?? "german",
+        language: this.options.language ?? "de",
       });
     });
     return this.ready;

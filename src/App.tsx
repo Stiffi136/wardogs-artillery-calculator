@@ -8,6 +8,7 @@ import {
 } from "./logic/calculator/ArtilleryCalculator";
 import { BrowserSpeechOutput } from "./logic/speech/SpeechOutput";
 import { AudioFeedback } from "./logic/speech/AudioFeedback";
+import { AudioPlayback, type Recording } from "./logic/speech/AudioPlayback";
 import { parseSpeechCommand } from "./logic/speech/SpeechCommandParser";
 import { SpeechSession } from "./logic/speech/SpeechSession";
 import { WhisperEngine } from "./logic/speech/WhisperEngine";
@@ -63,10 +64,15 @@ function App() {
     [pendingCoordinates, setPendingCoordinates] =
       useState<PendingCoordinates>(null),
     [audioLevel, setAudioLevel] = useState(0),
-    [vadActive, setVadActive] = useState(false);
+    [vadActive, setVadActive] = useState(false),
+    [hasRecording, setHasRecording] = useState(false),
+    [lastTranscript, setLastTranscript] = useState<string | null>(null),
+    [showTranscript, setShowTranscript] = useState(false);
   const spokenSolution = useRef<string | null>(null),
     pendingCoordinatesRef = useRef<PendingCoordinates>(null),
-    feedback = useRef(new AudioFeedback());
+    feedback = useRef(new AudioFeedback()),
+    playback = useRef(new AudioPlayback()),
+    lastRecording = useRef<Recording | null>(null);
   const engine = useRef<WhisperEngine | null>(null),
     output = useRef(new BrowserSpeechOutput()),
     session = useRef<SpeechSession | null>(null);
@@ -100,6 +106,7 @@ function App() {
       engine.current?.dispose();
       output.current.stop();
       feedback.current.dispose();
+      playback.current.dispose();
     },
     [],
   );
@@ -294,6 +301,15 @@ function App() {
           setAudioLevel(activity.level);
           setVadActive(activity.vadActive);
         },
+        (recording) => {
+          lastRecording.current = recording;
+          setHasRecording(true);
+          setLastTranscript(null);
+          setShowTranscript(false);
+        },
+        (recording, text) => {
+          if (lastRecording.current === recording) setLastTranscript(text);
+        },
       );
       session.current = next;
       await next.start();
@@ -379,6 +395,25 @@ function App() {
               : t.waitingForSpeech
             : t.startSpeechControl}
         </small>
+        <button
+          className="replay-recording"
+          disabled={!hasRecording}
+          onClick={() => {
+            const recording = lastRecording.current;
+            if (recording) {
+              setShowTranscript(true);
+              void playback.current.play(recording);
+            }
+          }}
+        >
+          ▶ {t.replayRecording}
+        </button>
+        {showTranscript && (
+          <p className="replay-transcript" aria-live="polite">
+            <strong>{t.transcript}:</strong>{" "}
+            {lastTranscript || t.transcriptProcessing}
+          </p>
+        )}
       </section>
       <section className="weapon-picker">
         <label>

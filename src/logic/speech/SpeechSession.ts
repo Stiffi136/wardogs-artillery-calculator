@@ -1,5 +1,6 @@
 import { AudioRecorder } from "./AudioRecorder";
 import { AudioRingBuffer } from "./AudioRingBuffer";
+import type { Recording } from "./AudioPlayback";
 import { VoiceActivityDetector } from "./VoiceActivityDetector";
 import type { SpeechEngine } from "./WhisperEngine";
 export interface SpeechActivity {
@@ -17,18 +18,24 @@ export class SpeechSession {
   private readonly onText: (text: string) => void;
   private readonly onError: (error: Error) => void;
   private readonly onActivity?: (activity: SpeechActivity) => void;
+  private readonly onRecording?: (recording: Recording) => void;
+  private readonly onTranscript?: (recording: Recording, text: string) => void;
   constructor(
     engine: SpeechEngine,
     onStatus: (status: "listening" | "processing") => void,
     onText: (text: string) => void,
     onError: (error: Error) => void,
     onActivity?: (activity: SpeechActivity) => void,
+    onRecording?: (recording: Recording) => void,
+    onTranscript?: (recording: Recording, text: string) => void,
   ) {
     this.engine = engine;
     this.onStatus = onStatus;
     this.onText = onText;
     this.onError = onError;
     this.onActivity = onActivity;
+    this.onRecording = onRecording;
+    this.onTranscript = onTranscript;
   }
   async start() {
     await this.engine.initialize();
@@ -64,10 +71,15 @@ export class SpeechSession {
         offset += chunk.length;
       }
       this.utterance = [];
+      const recording = { audio: joined, sampleRate };
+      this.onRecording?.(recording);
       this.onStatus("processing");
       void this.engine
         .transcribe(joined, sampleRate)
-        .then(this.onText)
+        .then((text) => {
+          this.onTranscript?.(recording, text);
+          this.onText(text);
+        })
         .catch(this.onError)
         .finally(() => this.onStatus("listening"));
     }

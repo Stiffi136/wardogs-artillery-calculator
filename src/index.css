@@ -371,6 +371,32 @@ footer {
   color: #9fa99d;
   font-size: 0.82rem;
 }
+.replay-recording {
+  margin-top: 11px;
+  width: 100%;
+  background: #293129;
+  color: #dce6d8;
+}
+.replay-recording:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.replay-recording:not(:disabled):hover {
+  background: #495c33;
+}
+.replay-transcript {
+  margin: 10px 0 0;
+  padding: 9px 10px;
+  background: #0a0d0a;
+  border-left: 3px solid #71942d;
+  color: #dce6d8;
+  font-size: 0.9rem;
+}
+.replay-transcript strong {
+  color: #b8da39;
+  font-family: "Barlow Condensed", sans-serif;
+  letter-spacing: 0.1em;
+}
 .language-picker {
   float: right;
 }

@@ -4,7 +4,7 @@ import { pipeline } from "@huggingface/transformers";
 let recognizer:
   | Awaited<ReturnType<typeof pipeline<"automatic-speech-recognition">>>
   | undefined;
-let recognitionLanguage = "german";
+let recognitionLanguage = "de";
 
 async function loadRecognizer(model: string, device: "webgpu" | "wasm") {
   return pipeline("automatic-speech-recognition", model, {
@@ -27,7 +27,7 @@ self.onmessage = async (
   try {
     if (event.data.type === "initialize") {
       const model = event.data.model ?? "onnx-community/whisper-base";
-      recognitionLanguage = event.data.language ?? "german";
+      recognitionLanguage = event.data.language ?? "de";
       const canUseWebGpu = event.data.device === "webgpu" && "gpu" in navigator;
       let activeDevice: "webgpu" | "wasm" = canUseWebGpu ? "webgpu" : "wasm";
       try {
@@ -42,10 +42,9 @@ self.onmessage = async (
       const result = await recognizer(event.data.audio, {
         language: recognitionLanguage,
         task: "transcribe",
-        // Speech sessions are short command utterances, not dictation. These caps prevent loops.
+        // Coordinates commonly repeat digits (e.g. "62,43 63,23"). Do not
+        // penalize repetitions here, otherwise Whisper can omit a coordinate.
         max_new_tokens: 32,
-        no_repeat_ngram_size: 3,
-        repetition_penalty: 1.15,
       });
       self.postMessage({ type: "result", text: result.text.trim() });
     }

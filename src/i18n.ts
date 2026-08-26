@@ -1,6 +1,6 @@
 export const languages = {
-  de: { label: "Deutsch", locale: "de-DE", whisper: "german" },
-  en: { label: "English", locale: "en-US", whisper: "english" },
+  de: { label: "Deutsch", locale: "de-DE", whisper: "de" },
+  en: { label: "English", locale: "en-US", whisper: "en" },
 } as const;
 export type Language = keyof typeof languages;
 export const translate = {
@@ -65,6 +65,9 @@ export const translate = {
     speechDetected: "Sprache erkannt – Aufnahme läuft",
     waitingForSpeech: "Warte auf Sprache",
     startSpeechControl: "Sprachsteuerung starten",
+    replayRecording: "LETZTE AUFNAHME",
+    transcript: "TRANSKRIPT",
+    transcriptProcessing: "Wird noch von Whisper verarbeitet…",
     stop: "■ STOPPEN",
     autoOn: "🔊 AUTO: AN",
     autoOff: "🔊 AUTO: AUS",
@@ -151,6 +154,9 @@ export const translate = {
     speechDetected: "Speech detected – recording",
     waitingForSpeech: "Waiting for speech",
     startSpeechControl: "Start voice control",
+    replayRecording: "LAST RECORDING",
+    transcript: "TRANSCRIPT",
+    transcriptProcessing: "Whisper is still processing this recording…",
     stop: "■ STOP",
     autoOn: "🔊 AUTO: ON",
     autoOff: "🔊 AUTO: OFF",
