@@ -219,6 +219,8 @@ function App() {
         pendingCoordinatesRef.current
       ) {
         applyCoordinates(pendingCoordinatesRef.current, command.coordinates);
+      } else if (command.type === "coordinates") {
+        applyCoordinates("target", command.coordinates);
       } else if (command.type === "set-coordinates") {
         const patch: Partial<Form> = {};
         if (command.artillery)

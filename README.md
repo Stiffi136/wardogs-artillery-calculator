@@ -30,9 +30,10 @@ Sprachbefehle:
 - `Geschütz 45 32 Ziel 67 81`
 - `Artillerie 45 32`
 - `Ziel 67 81`
+- `67 81` (wird ohne Befehl als Zielkoordinate übernommen)
 - `Berechnen`, `Ergebnis`, `Vorlesen`, `Zurücksetzen`, `Stop`
 
-Zahlwörter wie `fünfundvierzig` sowie Dezimalwerte mit `Komma` werden verarbeitet. Unvollständige Ziel- oder Artilleriekoordinaten werden nicht übernommen.
+Zahlwörter wie `fünfundvierzig` sowie Dezimalwerte mit `Komma` werden verarbeitet. Zwei Zahlen ohne weiteren Befehl werden als X- und Y-Koordinate des Ziels übernommen. Unvollständige Ziel- oder Artilleriekoordinaten werden nicht übernommen.
 
 ## Architektur
 
