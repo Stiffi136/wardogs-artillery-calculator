@@ -79,6 +79,9 @@ function wordNumber(word: string): number | undefined {
 export function parseNumbers(text: string): number[] {
   const normalized = text
     .toLowerCase()
+    // Whisper can render two spoken numbers as a hyphenated pair ("10-20").
+    // Only split a hyphen between digits, preserving negative values ("-10").
+    .replace(/(\d)-(\d)/g, "$1 $2")
     // Whisper may use commas for both decimal separators and a short pause:
     // "62,43,63,23" or "20,3, 27,8" represents two coordinates.
     .replace(/\b(\d+),(\d+),\s*(\d+),(\d+)\b/g, "$1.$2 $3.$4")
