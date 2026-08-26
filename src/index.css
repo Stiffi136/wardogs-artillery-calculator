@@ -221,6 +221,31 @@ button {
   background: #b8da39;
   color: #172010;
 }
+.volume-control {
+  margin-top: 12px;
+  padding: 13px 15px;
+  background: #131814;
+  border: 1px solid #303a30;
+  border-radius: 4px;
+}
+.volume-control label {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 9px;
+  color: #a8b3a5;
+  font: 700 0.78rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.12em;
+}
+.volume-control label strong {
+  color: #d7f05b;
+}
+.volume-control input[type="range"] {
+  display: block;
+  width: 100%;
+  padding: 0;
+  accent-color: #b8da39;
+  cursor: pointer;
+}
 .notice {
   margin: 14px 0;
   padding: 10px 13px;

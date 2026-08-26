@@ -60,6 +60,10 @@ function App() {
     [notice, setNotice] = useState<string | null>(null),
     [speechOn, setSpeechOn] = useState(false),
     [autoSpeak, setAutoSpeak] = useState(false),
+    [outputVolume, setOutputVolume] = useState(() => {
+      const saved = Number(localStorage.getItem("wardogs-artillery-volume"));
+      return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : 1;
+    }),
     [modelLoading, setModelLoading] = useState(false),
     [pendingCoordinates, setPendingCoordinates] =
       useState<PendingCoordinates>(null),
@@ -69,10 +73,12 @@ function App() {
     [lastTranscript, setLastTranscript] = useState<string | null>(null),
     [showTranscript, setShowTranscript] = useState(false);
   const spokenSolution = useRef<string | null>(null),
+    outputVolumeRef = useRef(outputVolume),
     pendingCoordinatesRef = useRef<PendingCoordinates>(null),
     feedback = useRef(new AudioFeedback()),
     playback = useRef(new AudioPlayback()),
     lastRecording = useRef<Recording | null>(null);
+  outputVolumeRef.current = outputVolume;
   const engine = useRef<WhisperEngine | null>(null),
     output = useRef(new BrowserSpeechOutput()),
     session = useRef<SpeechSession | null>(null);
@@ -100,6 +106,12 @@ function App() {
     document.documentElement.lang = languages[language].locale;
     document.title = t.documentTitle;
   }, [language, t.documentTitle]);
+  useEffect(() => {
+    localStorage.setItem("wardogs-artillery-volume", String(outputVolume));
+    feedback.current.setVolume(outputVolume);
+    playback.current.setVolume(outputVolume);
+    if (outputVolume <= 0) output.current.stop();
+  }, [outputVolume]);
   useEffect(
     () => () => {
       session.current?.stop();
@@ -134,11 +146,19 @@ function App() {
           " Kilometer. Richtung " +
           Math.round(currentSolution.azimuthDegrees) +
           " Grad.";
-    output.current.speak(message, languages[language].locale);
+    output.current.speak(
+      message,
+      languages[language].locale,
+      outputVolumeRef.current,
+    );
   }, [language]);
   const say = useCallback(
     (message: string) =>
-      output.current.speak(message, languages[language].locale),
+      output.current.speak(
+        message,
+        languages[language].locale,
+        outputVolumeRef.current,
+      ),
     [language],
   );
   useEffect(() => {
@@ -556,6 +576,21 @@ function App() {
         <button className="speak" onClick={speak}>
           🔊 {t.read}
         </button>
+      </section>
+      <section className="volume-control">
+        <label htmlFor="output-volume">
+          <span>🔊 {t.outputVolume}</span>
+          <strong>{Math.round(outputVolume * 100)}%</strong>
+        </label>
+        <input
+          id="output-volume"
+          type="range"
+          min="0"
+          max="100"
+          value={Math.round(outputVolume * 100)}
+          onChange={(event) => setOutputVolume(Number(event.target.value) / 100)}
+          aria-valuetext={`${Math.round(outputVolume * 100)}%`}
+        />
       </section>
       <details className="speech-guide">
         <summary>{t.guide}</summary>

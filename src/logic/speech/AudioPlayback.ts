@@ -7,6 +7,12 @@ export type Recording = {
 export class AudioPlayback {
   private context?: AudioContext;
   private source?: AudioBufferSourceNode;
+  private volume = 1;
+
+  setVolume(volume: number) {
+    this.volume = volume;
+    if (volume <= 0) this.source?.stop();
+  }
 
   async play(recording: Recording) {
     this.source?.stop();
@@ -21,8 +27,11 @@ export class AudioPlayback {
     buffer.copyToChannel(new Float32Array(recording.audio), 0);
 
     const source = this.context.createBufferSource();
+    const gain = this.context.createGain();
     source.buffer = buffer;
-    source.connect(this.context.destination);
+    gain.gain.value = this.volume;
+    source.connect(gain);
+    gain.connect(this.context.destination);
     source.onended = () => {
       if (this.source === source) this.source = undefined;
     };
