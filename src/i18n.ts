@@ -17,22 +17,31 @@ export const translate = {
     listen: "Höre zu…",
     processing: "🗣️ Verarbeite…",
     commandNotUnderstood: "⚠️ Nicht verstanden",
-    noCommand: "Kein gültiger Befehl erkannt. Nenne zuerst Ziel oder Artillerie – oder beide Koordinaten zusammen.",
-    incompleteCoordinates: (subject: string) => "Bitte nenne X und Y für " + subject + ".",
+    noCommand:
+      "Kein gültiger Befehl erkannt. Nenne zuerst Ziel oder Artillerie – oder beide Koordinaten zusammen.",
+    incompleteCoordinates: (subject: string) =>
+      "Bitte nenne X und Y für " + subject + ".",
     validCoordinates: "Bitte vollständige, gültige Koordinaten eingeben.",
-    allCoordinatesRequired: "Bitte X und Y für Artillerie und Ziel vollständig eingeben.",
+    allCoordinatesRequired:
+      "Bitte X und Y für Artillerie und Ziel vollständig eingeben.",
     solutionUpdated: "Feuerlösung aktualisiert.",
     readingStopped: "Vorlesen gestoppt.",
-    speechUnavailableMessage: "Das lokale Whisper-Modell konnte nicht gestartet werden. Der Mikrofonzugriff wurde noch nicht angefordert.",
-    coordinatesAccepted: (subject: string, x: number, y: number) => subject + "koordinaten übernommen: X " + x + ", Y " + y + ".",
-    ttsSubjectCoordinatesUnderstood: (subject: string, x: number, y: number) => subject + "koordinaten verstanden. X " + x + ", Y " + y + ".",
-    ttsWaitingForCoordinates: (subject: string) => "Verstanden, warte auf " + subject.toLowerCase() + "koordinaten.",
+    speechUnavailableMessage:
+      "Das lokale Whisper-Modell konnte nicht gestartet werden. Der Mikrofonzugriff wurde noch nicht angefordert.",
+    coordinatesAccepted: (subject: string, x: number, y: number) =>
+      subject + "koordinaten übernommen: X " + x + ", Y " + y + ".",
+    ttsSubjectCoordinatesUnderstood: (subject: string, x: number, y: number) =>
+      subject + "koordinaten verstanden. X " + x + ", Y " + y + ".",
+    ttsWaitingForCoordinates: (subject: string) =>
+      "Verstanden, warte auf " + subject.toLowerCase() + "koordinaten.",
     ttsBothCoordinatesUnderstood: "Artillerie- und Zielkoordinaten verstanden.",
     ttsCoordinatesUnderstood: "Koordinaten verstanden.",
     ttsInputReset: "Eingabe zurückgesetzt.",
-    recognizedCoordinates: (text: string, subject: string) => "„" + text + "“ erkannt. Bitte nenne jetzt X und Y für " + subject + ".",
+    recognizedCoordinates: (text: string, subject: string) =>
+      "„" + text + "“ erkannt. Bitte nenne jetzt X und Y für " + subject + ".",
     recognized: (text: string) => "Erkannt: „" + text + "“",
-    waitingForCoordinates: (subject: string) => "⌛ Warte auf " + subject + "koordinaten",
+    waitingForCoordinates: (subject: string) =>
+      "⌛ Warte auf " + subject + "koordinaten",
     distance: "ENTFERNUNG",
     direction: "RICHTUNG",
     weapon: "WAFFE",
@@ -94,22 +103,31 @@ export const translate = {
     listen: "Listening…",
     processing: "🗣️ Processing…",
     commandNotUnderstood: "⚠️ Not understood",
-    noCommand: "No valid command recognized. Say target or artillery first — or provide both coordinates together.",
-    incompleteCoordinates: (subject: string) => "Please provide X and Y for " + subject + ".",
+    noCommand:
+      "No valid command recognized. Say target or artillery first — or provide both coordinates together.",
+    incompleteCoordinates: (subject: string) =>
+      "Please provide X and Y for " + subject + ".",
     validCoordinates: "Please enter complete, valid coordinates.",
     allCoordinatesRequired: "Please enter X and Y for artillery and target.",
     solutionUpdated: "Fire solution updated.",
     readingStopped: "Reading stopped.",
-    speechUnavailableMessage: "The local Whisper model could not be started. Microphone access may not have been granted.",
-    coordinatesAccepted: (subject: string, x: number, y: number) => subject + " coordinates accepted: X " + x + ", Y " + y + ".",
-    ttsSubjectCoordinatesUnderstood: (subject: string, x: number, y: number) => subject + " coordinates understood. X " + x + ", Y " + y + ".",
-    ttsWaitingForCoordinates: (subject: string) => "Understood, waiting for " + subject.toLowerCase() + " coordinates.",
-    ttsBothCoordinatesUnderstood: "Artillery and target coordinates understood.",
+    speechUnavailableMessage:
+      "The local Whisper model could not be started. Microphone access may not have been granted.",
+    coordinatesAccepted: (subject: string, x: number, y: number) =>
+      subject + " coordinates accepted: X " + x + ", Y " + y + ".",
+    ttsSubjectCoordinatesUnderstood: (subject: string, x: number, y: number) =>
+      subject + " coordinates understood. X " + x + ", Y " + y + ".",
+    ttsWaitingForCoordinates: (subject: string) =>
+      "Understood, waiting for " + subject.toLowerCase() + " coordinates.",
+    ttsBothCoordinatesUnderstood:
+      "Artillery and target coordinates understood.",
     ttsCoordinatesUnderstood: "Coordinates understood.",
     ttsInputReset: "Input reset.",
-    recognizedCoordinates: (text: string, subject: string) => "“" + text + "” recognized. Now say X and Y for " + subject + ".",
+    recognizedCoordinates: (text: string, subject: string) =>
+      "“" + text + "” recognized. Now say X and Y for " + subject + ".",
     recognized: (text: string) => "Recognized: “" + text + "”",
-    waitingForCoordinates: (subject: string) => "⌛ Waiting for " + subject + " coordinates",
+    waitingForCoordinates: (subject: string) =>
+      "⌛ Waiting for " + subject + " coordinates",
     distance: "DISTANCE",
     direction: "DIRECTION",
     weapon: "WEAPON",

@@ -440,7 +440,15 @@ function App() {
           }
           sub={
             solution
-              ? fmt(solution.distanceKilometers, languages[language].locale, 2) + " km · " + fmt(solution.distanceUnits, languages[language].locale) + " " + t.units
+              ? fmt(
+                  solution.distanceKilometers,
+                  languages[language].locale,
+                  2,
+                ) +
+                " km · " +
+                fmt(solution.distanceUnits, languages[language].locale) +
+                " " +
+                t.units
               : t.enterCoordinates
           }
           major
@@ -449,17 +457,33 @@ function App() {
           name={t.mil}
           value={
             solution?.elevationSolutions.length
-              ? solution.elevationSolutions.map(({ mil }) => fmt(mil, languages[language].locale, 0)).join(" / ") + " mil"
+              ? solution.elevationSolutions
+                  .map(({ mil }) => fmt(mil, languages[language].locale, 0))
+                  .join(" / ") + " mil"
               : "—"
           }
-          sub={solution?.elevationSolutions.length
-            ? solution.elevationSolutions.map(({ arc }) => arc === "low" ? t.lowArc : arc === "high" ? t.highArc : t.milElevation).join(" / ")
-            : t.outOfRange}
+          sub={
+            solution?.elevationSolutions.length
+              ? solution.elevationSolutions
+                  .map(({ arc }) =>
+                    arc === "low"
+                      ? t.lowArc
+                      : arc === "high"
+                        ? t.highArc
+                        : t.milElevation,
+                  )
+                  .join(" / ")
+              : t.outOfRange
+          }
           major
         />
         <Result
           name={t.direction}
-          value={solution ? `${fmt(solution.azimuthDegrees, languages[language].locale, 1)}°` : "—"}
+          value={
+            solution
+              ? `${fmt(solution.azimuthDegrees, languages[language].locale, 1)}°`
+              : "—"
+          }
           sub={
             solution
               ? compass(solution.azimuthDegrees, language)

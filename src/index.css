@@ -9,7 +9,9 @@
   justify-content: space-between;
   gap: 12px;
   color: #98a497;
-  font: 700 0.8rem "Barlow Condensed", sans-serif;
+  font:
+    700 0.8rem "Barlow Condensed",
+    sans-serif;
   letter-spacing: 0.08em;
 }
 .weapon-picker select {
@@ -20,7 +22,9 @@
   border-radius: 3px;
   color: #edf2e6;
   padding: 8px;
-  font: 600 1rem Rajdhani, sans-serif;
+  font:
+    600 1rem Rajdhani,
+    sans-serif;
 }
 * {
   box-sizing: border-box;
