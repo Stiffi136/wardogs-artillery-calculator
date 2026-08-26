@@ -80,8 +80,8 @@ export function parseNumbers(text: string): number[] {
   const normalized = text
     .toLowerCase()
     // Whisper may use commas for both decimal separators and a short pause:
-    // "62,43,63,23" represents the two coordinates 62,43 and 63,23.
-    .replace(/\b(\d+),(\d+),(\d+),(\d+)\b/g, "$1.$2 $3.$4")
+    // "62,43,63,23" or "20,3, 27,8" represents two coordinates.
+    .replace(/\b(\d+),(\d+),\s*(\d+),(\d+)\b/g, "$1.$2 $3.$4")
     // Keep written decimal commas (for example "82,9") as part of one number.
     .replace(/(\d),(\d)/g, "$1.$2")
     .replace(/,/g, " ")
