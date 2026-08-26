@@ -351,6 +351,30 @@ footer {
   color: #bcc7b8;
   font-size: 1rem;
 }
+.model-progress {
+  margin-top: 14px;
+}
+.model-progress-head {
+  display: flex;
+  justify-content: space-between;
+  color: #a8b3a5;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.model-progress-head strong {
+  margin: 0;
+  color: #d7f05b;
+  font: inherit;
+}
+.model-progress progress {
+  display: block;
+  width: 100%;
+  height: 8px;
+  margin-top: 6px;
+  accent-color: #b8da39;
+}
 
 .mic-meter {
   margin: 0 0 16px;

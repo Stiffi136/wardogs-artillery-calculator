@@ -1,10 +1,25 @@
 /// <reference lib="webworker" />
-import { pipeline } from "@huggingface/transformers";
+import { env, pipeline } from "@huggingface/transformers";
+
+// Vite copies public/models to the deployment root. BASE_URL also includes the
+// repository name when the app is deployed through GitHub Pages.
+env.allowLocalModels = true;
+env.localModelPath = `${import.meta.env.BASE_URL}models/`;
+env.allowRemoteModels = false;
 
 let recognizer:
   | Awaited<ReturnType<typeof pipeline<"automatic-speech-recognition">>>
   | undefined;
 let recognitionLanguage = "de";
+
+async function hasUsableWebGpuAdapter(requested: boolean | undefined) {
+  if (!requested || !("gpu" in navigator)) return false;
+  try {
+    return (await navigator.gpu.requestAdapter()) !== null;
+  } catch {
+    return false;
+  }
+}
 
 async function loadRecognizer(model: string, device: "webgpu" | "wasm") {
   return pipeline("automatic-speech-recognition", model, {
@@ -12,6 +27,13 @@ async function loadRecognizer(model: string, device: "webgpu" | "wasm") {
     // Quantized Whisper decoders currently fail to initialize in some ONNX Runtime Web builds.
     // Use the unquantized graph for both backends to avoid the QDQ/N-bit operator path.
     dtype: "fp32",
+    progress_callback: (progress) => {
+      if (progress.status !== "progress_total") return;
+      self.postMessage({
+        type: "model-progress",
+        progress: Math.round(Math.min(100, Math.max(0, progress.progress))),
+      });
+    },
   });
 }
 
@@ -28,7 +50,9 @@ self.onmessage = async (
     if (event.data.type === "initialize") {
       const model = event.data.model ?? "onnx-community/whisper-base";
       recognitionLanguage = event.data.language ?? "de";
-      const canUseWebGpu = event.data.device === "webgpu" && "gpu" in navigator;
+      const canUseWebGpu = await hasUsableWebGpuAdapter(
+        event.data.device === "webgpu",
+      );
       let activeDevice: "webgpu" | "wasm" = canUseWebGpu ? "webgpu" : "wasm";
       try {
         recognizer = await loadRecognizer(model, activeDevice);

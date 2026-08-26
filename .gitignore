@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Whisper is downloaded by the GitHub Pages workflow and published with Vite.
+# Do not commit the large model artifacts to the source repository.
+public/models/*
+!public/models/.gitkeep
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

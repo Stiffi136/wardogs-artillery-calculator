@@ -10,7 +10,15 @@ npm run dev
 npm run build
 ```
 
-Für die Sprachsteuerung wird ein moderner Browser mit Mikrofonzugriff benötigt. Beim ersten Start lädt der Browser `onnx-community/whisper-base`; danach verwendet die Anwendung den lokalen Browser-Cache. WebGPU wird bevorzugt, andernfalls nutzt Transformers.js WASM/CPU. Es gibt keinen Whisper-Server und keine dauerhaft gespeicherten Audiodaten.
+Für die Sprachsteuerung wird ein moderner Browser mit Mikrofonzugriff benötigt. Das Whisper-Modell wird zusammen mit dem statischen Build ausgeliefert und anschließend zusätzlich im Browser-Cache gehalten. WebGPU wird bevorzugt, andernfalls nutzt Transformers.js WASM/CPU. Es gibt keinen Whisper-Server und keine dauerhaft gespeicherten Audiodaten.
+
+## GitHub Pages und lokales Whisper-Modell
+
+Der Workflow `.github/workflows/deploy-pages.yml` lädt beim Deployment die für die Anwendung benötigten Dateien von `onnx-community/whisper-base` nach `public/models/` und veröffentlicht sie mit dem Vite-Build. Die Gewichte werden nicht in Git eingecheckt, weil GitHub normale Dateien über 100 MiB ablehnt und Git LFS nicht mit GitHub Pages funktioniert.
+
+Aktiviere vor dem ersten Deployment in den Repository-Einstellungen unter **Pages** als Quelle **GitHub Actions**. Jeder Push auf `main` erstellt danach die statische Seite inklusive Modell. Der erste Aufruf im Browser lädt das Modell von derselben GitHub-Pages-Domain; spätere Aufrufe nutzen den Browser-Cache.
+
+Für lokale Sprachsteuerung müssen die gleichen Dateien unter `public/models/onnx-community/whisper-base/` liegen. Lade sie mit `npm run download:model` herunter. Ohne diese Dateien bleibt der Rechner nutzbar, die Sprachsteuerung meldet jedoch den fehlenden lokalen Modell-Download.
 
 ## Bedienung
 
@@ -36,4 +44,4 @@ Eine Koordinateneinheit entspricht zentral konfiguriert 100 Metern. Der Azimut v
 
 ## Bekannte Einschränkungen
 
-Das initiale Whisper-Modell ist relativ groß und benötigt je nach Gerät Zeit zum Herunterladen. Die RMS-basierte Sprachaktivitätserkennung ist ein bewusst einfaches MVP und kann später durch Silero VAD ersetzt werden. Der Browser muss Web Worker, Web Audio und Speech Synthesis unterstützen.
+Das initiale Whisper-Modell umfasst rund 300 MB und benötigt je nach Gerät Zeit zum Herunterladen. Die RMS-basierte Sprachaktivitätserkennung ist ein bewusst einfaches MVP und kann später durch Silero VAD ersetzt werden. Der Browser muss Web Worker, Web Audio und Speech Synthesis unterstützen.

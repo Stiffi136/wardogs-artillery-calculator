@@ -65,6 +65,7 @@ function App() {
       return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : 1;
     }),
     [modelLoading, setModelLoading] = useState(false),
+    [modelProgress, setModelProgress] = useState<number | null>(null),
     [pendingCoordinates, setPendingCoordinates] =
       useState<PendingCoordinates>(null),
     [audioLevel, setAudioLevel] = useState(0),
@@ -289,6 +290,7 @@ function App() {
     }
     try {
       setModelLoading(true);
+      setModelProgress(0);
       setStatus("🗣️ Lade lokales Whisper-Modell…");
       const next = new SpeechSession(
         (() => {
@@ -297,6 +299,7 @@ function App() {
             model: "onnx-community/whisper-base",
             device: "webgpu",
             language: languages[language].whisper,
+            onModelProgress: setModelProgress,
           });
           return engine.current;
         })(),
@@ -336,8 +339,10 @@ function App() {
       setSpeechOn(true);
       setStatus("🎤 " + t.listen);
       setModelLoading(false);
+      setModelProgress(null);
     } catch (error) {
       setModelLoading(false);
+      setModelProgress(null);
       setStatus("⚠️ Sprachsteuerung nicht verfügbar");
       setNotice(
         error instanceof Error ? error.message : t.speechUnavailableMessage,
@@ -389,8 +394,19 @@ function App() {
         aria-live="polite"
       >
         <span>{t.speechStatus}</span>
-        <strong>{speechOn ? status : t.speechOff}</strong>
+        <strong>{speechOn || modelLoading ? status : t.speechOff}</strong>
         <p>{dialogueHint}</p>
+        {modelLoading && modelProgress !== null && (
+          <div className="model-progress" aria-label="Modell-Downloadfortschritt">
+            <div className="model-progress-head">
+              <span>{language === "en" ? "MODEL DOWNLOAD" : "MODELL-DOWNLOAD"}</span>
+              <strong>{modelProgress}%</strong>
+            </div>
+            <progress value={modelProgress} max="100">
+              {modelProgress}%
+            </progress>
+          </div>
+        )}
       </section>
       <section
         className="mic-meter"

@@ -7,6 +7,7 @@ export interface WhisperOptions {
   model?: string;
   device?: "webgpu" | "wasm";
   language?: string;
+  onModelProgress?: (progress: number) => void;
 }
 function resample(
   audio: Float32Array,
@@ -45,9 +46,17 @@ export class WhisperEngine implements SpeechEngine {
     });
     this.ready = new Promise((resolve, reject) => {
       this.worker!.onmessage = (
-        event: MessageEvent<{ type: string; text?: string; message?: string }>,
+        event: MessageEvent<{
+          type: string;
+          text?: string;
+          message?: string;
+          progress?: number;
+        }>,
       ) => {
         if (event.data.type === "ready") resolve();
+        else if (event.data.type === "model-progress") {
+          this.options.onModelProgress?.(event.data.progress ?? 0);
+        }
         else if (event.data.type === "result") {
           this.pending?.resolve(event.data.text ?? "");
           this.pending = undefined;
