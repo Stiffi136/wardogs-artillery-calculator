@@ -61,6 +61,17 @@ h1 {
   text-transform: uppercase;
   margin: 5px 0;
 }
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.title-icon {
+  width: clamp(2.25rem, 7vw, 3.5rem);
+  height: clamp(2.25rem, 7vw, 3.5rem);
+  flex: 0 0 auto;
+  transform: translateY(2px);
+}
 .subline {
   color: #9fa8a0;
   margin: 7px 0 0;

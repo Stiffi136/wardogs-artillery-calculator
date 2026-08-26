@@ -39,7 +39,7 @@ function App() {
     (localStorage.getItem("wardogs-artillery-language") as Language) in
     languages
       ? (localStorage.getItem("wardogs-artillery-language") as Language)
-      : "de",
+      : "en",
   );
   const t = translate[language];
   const [weaponId, setWeaponId] = useState<WeaponId>("mortar");
@@ -91,7 +91,9 @@ function App() {
   }, [form]);
   useEffect(() => {
     localStorage.setItem("wardogs-artillery-language", language);
-  }, [language]);
+    document.documentElement.lang = languages[language].locale;
+    document.title = t.documentTitle;
+  }, [language, t.documentTitle]);
   useEffect(
     () => () => {
       session.current?.stop();
@@ -340,7 +342,10 @@ function App() {
         <p className="eyebrow">
           WARDOGS · {language === "en" ? "FIELD CALCULATOR" : "FELDRECHNER"}
         </p>
-        <h1>{t.title}</h1>
+        <div className="title-row">
+          <img className="title-icon" src="/favicon.svg" alt="" />
+          <h1>{t.title}</h1>
+        </div>
         <p className="subline">{t.subline}</p>
       </header>
       <section
