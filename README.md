@@ -2,6 +2,10 @@
 
 A browser-based coordinate calculator for WARDOGS. It calculates distance, coordinate differences, and azimuth entirely in the browser.
 
+Try it: https://stiffi136.github.io/wardogs-artillery-calculator/
+
+![WARDOGS Artillery Calculator interface](docs/screenshots/screen1.png)
+
 ## User Guide
 
 ### Entering coordinates
@@ -65,4 +69,3 @@ The workflow in `.github/workflows/deploy-pages.yml` downloads the required file
 - `src/logic/calculator` — coordinate validation, central map configuration, and azimuth/distance calculation.
 - `src/logic/speech` — microphone recording, RMS VAD with a 500 ms pre-roll, speech session, Whisper web worker, command parser, and speech output.
 - `src/App.tsx` — responsive UI and application state.
-
