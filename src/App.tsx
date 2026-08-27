@@ -293,7 +293,7 @@ function App() {
     try {
       setModelLoading(true);
       setModelProgress(0);
-      setStatus("🗣️ Lade lokales Whisper-Modell…");
+      setStatus(t.loadingModel);
       const next = new SpeechSession(
         (() => {
           engine.current?.dispose();
@@ -386,7 +386,11 @@ function App() {
           WARDOGS · {language === "en" ? "FIELD CALCULATOR" : "FELDRECHNER"}
         </p>
         <div className="title-row">
-          <img className="title-icon" src="/favicon.svg" alt="" />
+          <img
+            className="title-icon"
+            src={`${import.meta.env.BASE_URL}favicon.svg`}
+            alt=""
+          />
           <h1>{t.title}</h1>
         </div>
         <p className="subline">{t.subline}</p>

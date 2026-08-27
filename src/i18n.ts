@@ -16,6 +16,7 @@ export const translate = {
     off: "AUS",
     listen: "Höre zu…",
     processing: "🗣️ Verarbeite…",
+    loadingModel: "🗣️ Lade lokales Whisper-Modell…",
     commandNotUnderstood: "⚠️ Nicht verstanden",
     noCommand:
       "Kein gültiger Befehl erkannt. Nenne zuerst Ziel oder Artillerie – oder beide Koordinaten zusammen.",
@@ -106,6 +107,7 @@ export const translate = {
     off: "OFF",
     listen: "Listening…",
     processing: "🗣️ Processing…",
+    loadingModel: "🗣️ Loading local Whisper model…",
     commandNotUnderstood: "⚠️ Not understood",
     noCommand:
       "No valid command recognized. Say target or artillery first — or provide both coordinates together.",
