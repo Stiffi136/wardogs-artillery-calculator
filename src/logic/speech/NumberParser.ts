@@ -85,6 +85,9 @@ export function parseNumbers(text: string): number[] {
     // Whisper may use commas for both decimal separators and a short pause:
     // "62,43,63,23" or "20,3, 27,8" represents two coordinates.
     .replace(/\b(\d+),(\d+),\s*(\d+),(\d+)\b/g, "$1.$2 $3.$4")
+    // For a short coordinate pair, Whisper often inserts a comma for the
+    // pause ("67,81"). Interpret that as two values, not one decimal value.
+    .replace(/\b(\d+),(\d+)\b/g, "$1 $2")
     // Keep written decimal commas (for example "82,9") as part of one number.
     .replace(/(\d),(\d)/g, "$1.$2")
     .replace(/,/g, " ")
