@@ -1,48 +1,68 @@
 # WARDOGS Artillery Calculator
 
-Browserbasierter Koordinatenrechner für WARDOGS. Er berechnet Entfernung, Differenzen und Azimut vollständig lokal im Browser.
+A browser-based coordinate calculator for WARDOGS. It calculates distance, coordinate differences, and azimuth entirely in the browser.
 
-## Start
+## User Guide
+
+### Entering coordinates
+
+Enter complete artillery and target coordinates in the input fields. The fire solution updates immediately. The selected language, most recently used coordinates, and output volume are saved locally in your browser; no personal data is collected.
+
+One coordinate unit equals 100 metres. The azimuth is calculated with `atan2(deltaX, deltaY)`: 0° is north and 90° is east. Matching artillery and target coordinates show an azimuth of 0°.
+
+Choose the appropriate weapon and, for mortars, the desired trajectory. The calculator reports when the target is outside the selected weapon's range.
+
+### Voice control
+
+Select English or German in the application, then start voice control and allow microphone access when prompted. The app runs speech recognition locally with Whisper; recorded audio is not sent to a server or stored permanently.
+
+English voice-command examples:
+
+- `Artillery 45 32, target 67 81`
+- `Gun 45 32 target 67 81`
+- `Artillery 45 32`
+- `Target 67 81`
+- `67 81` — without a command, this is used as the target coordinate
+- `Calculate`, `result`, `read`, `reset`, or `stop`
+
+You can also give coordinates step by step: say `target`, then `67 81`; or say `artillery`, then `45 32`. Number words and decimal values such as `forty five thirty two` and `45 point 32` are supported. Incomplete coordinate pairs are ignored.
+
+Voice control requires a modern browser with microphone access, Web Workers, Web Audio, and Speech Synthesis. WebGPU is preferred; if it is unavailable, Transformers.js uses WASM/CPU instead. The first Whisper download is about 300 MB, so loading may take some time depending on the device and connection.
+
+## Developer Guide
+
+### Local development
 
 ```bash
 npm install
 npm run dev
-npm run build
 ```
 
-Für die Sprachsteuerung wird ein moderner Browser mit Mikrofonzugriff benötigt. Das Whisper-Modell wird zusammen mit dem statischen Build ausgeliefert und anschließend zusätzlich im Browser-Cache gehalten. WebGPU wird bevorzugt, andernfalls nutzt Transformers.js WASM/CPU. Es gibt keinen Whisper-Server und keine dauerhaft gespeicherten Audiodaten.
+Other useful commands:
 
-## GitHub Pages und lokales Whisper-Modell
+```bash
+npm run build
+npm run lint
+npm run preview
+```
 
-Der Workflow `.github/workflows/deploy-pages.yml` lädt beim Deployment die für die Anwendung benötigten Dateien von `onnx-community/whisper-base` nach `public/models/` und veröffentlicht sie mit dem Vite-Build. Die Gewichte werden nicht in Git eingecheckt, weil GitHub normale Dateien über 100 MiB ablehnt und Git LFS nicht mit GitHub Pages funktioniert.
+### Local Whisper model
 
-Aktiviere vor dem ersten Deployment in den Repository-Einstellungen unter **Pages** als Quelle **GitHub Actions**. Jeder Push auf `main` erstellt danach die statische Seite inklusive Modell. Der erste Aufruf im Browser lädt das Modell von derselben GitHub-Pages-Domain; spätere Aufrufe nutzen den Browser-Cache.
+The calculator works without the model, but voice control requires the model files at `public/models/onnx-community/whisper-base/`. Download them with:
 
-Für lokale Sprachsteuerung müssen die gleichen Dateien unter `public/models/onnx-community/whisper-base/` liegen. Lade sie mit `npm run download:model` herunter. Ohne diese Dateien bleibt der Rechner nutzbar, die Sprachsteuerung meldet jedoch den fehlenden lokalen Modell-Download.
+```bash
+npm run download:model
+```
 
-## Bedienung
+The model is intentionally not committed to Git: GitHub rejects ordinary files above 100 MiB, and Git LFS is not compatible with GitHub Pages. The browser caches the model after it has been downloaded.
 
-Die Eingabefelder sind der zuverlässige Hauptweg: vollständige Koordinaten aktualisieren das Ergebnis sofort. Die zuletzt verwendeten Koordinaten werden ohne personenbezogene Daten in `localStorage` gespeichert.
+### GitHub Pages deployment
 
-Sprachbefehle:
+The workflow in `.github/workflows/deploy-pages.yml` downloads the required files from `onnx-community/whisper-base` into `public/models/`, then publishes them with the Vite build. Before the first deployment, set **Pages** to use **GitHub Actions** in the repository settings. Every push to `main` then deploys the static app and model; the browser fetches the model from the same GitHub Pages domain.
 
-- `Artillerie 45 32, Ziel 67 81`
-- `Geschütz 45 32 Ziel 67 81`
-- `Artillerie 45 32`
-- `Ziel 67 81`
-- `67 81` (wird ohne Befehl als Zielkoordinate übernommen)
-- `Berechnen`, `Ergebnis`, `Vorlesen`, `Zurücksetzen`, `Stop`
+### Project structure
 
-Zahlwörter wie `fünfundvierzig` sowie Dezimalwerte mit `Komma` werden verarbeitet. Zwei Zahlen ohne weiteren Befehl werden als X- und Y-Koordinate des Ziels übernommen. Unvollständige Ziel- oder Artilleriekoordinaten werden nicht übernommen.
+- `src/logic/calculator` — coordinate validation, central map configuration, and azimuth/distance calculation.
+- `src/logic/speech` — microphone recording, RMS VAD with a 500 ms pre-roll, speech session, Whisper web worker, command parser, and speech output.
+- `src/App.tsx` — responsive UI and application state.
 
-## Architektur
-
-- `logic/calculator`: Validierung, zentrale Kartenkonfiguration und Azimut-/Entfernungsberechnung.
-- `logic/speech`: Mikrofonaufnahme, RMS-VAD mit 500-ms-Pre-Roll, Speech-Session, Whisper-Web-Worker, Parser und Sprachausgabe.
-- `App.tsx`: responsive Bedienoberfläche und UI-Zustand.
-
-Eine Koordinateneinheit entspricht zentral konfiguriert 100 Metern. Der Azimut verwendet `atan2(deltaX, deltaY)`: 0° = Norden, 90° = Osten. Bei identischen Koordinaten wird 0° angezeigt.
-
-## Bekannte Einschränkungen
-
-Das initiale Whisper-Modell umfasst rund 300 MB und benötigt je nach Gerät Zeit zum Herunterladen. Die RMS-basierte Sprachaktivitätserkennung ist ein bewusst einfaches MVP und kann später durch Silero VAD ersetzt werden. Der Browser muss Web Worker, Web Audio und Speech Synthesis unterstützen.
