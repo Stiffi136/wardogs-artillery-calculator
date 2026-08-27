@@ -75,7 +75,9 @@ export const translate = {
     autoOff: "🔊 AUTO: AUS",
     speechStatus: "SPRACHSTATUS",
     speechOff: "🎤 Sprachsteuerung AUS",
-    speechHint: "Sage z. B. „67 81“ für das Ziel oder „Ziel“, dann „67 81“. ",
+    speechFormat: "EMPFOHLENES SPRACHFORMAT",
+    speechFormatExample: "X 67 · Y 81",
+    speechFormatHint: "Sprich X und Y als Trennung. Es werden nur die Zahlen übernommen.",
     guide: "SPRACHBEFEHLE & ZAHLENFORMATE",
     step: "Schrittweise:",
     both: "Beide Koordinaten:",
@@ -83,17 +85,17 @@ export const translate = {
     targetGuide: "Ziel:",
     actions: "Aktionen:",
     numbers: "Zahlen:",
-    guideStep: "„Ziel“ → „67 81“ oder „Artillerie“ → „45 32“",
-    guideBoth: "„Artillerie 45 32, Ziel 67 81“",
+    guideStep: "„Ziel“ → „X 67 Y 81“ oder „Artillerie“ → „X 45 Y 32“",
+    guideBoth: "„Artillerie X 45 Y 32, Ziel X 67 Y 81“",
     guideArtillery:
-      "„Artillerie 45 32“, „Geschütz 45 32“, „Kanone 45 32“ oder „Quelle 45 32“",
-    guideTarget: "„Ziel 67 81“",
+      "„Artillerie X 45 Y 32“, „Geschütz X 45 Y 32“, „Kanone X 45 Y 32“ oder „Quelle X 45 Y 32“",
+    guideTarget: "„Ziel X 67 Y 81“",
     guideActions:
       "„Berechnen“, „Ergebnis“, „Vorlesen“, „Zurücksetzen“, „Reset“ und „Stop“",
     guideNumbers:
-      "45 32, „fünfundvierzig zweiunddreißig“ oder Dezimalwerte wie „45 Komma 32“",
+      "Nutze zur klaren Trennung „X 45 Y 32“. Buchstaben werden ignoriert; nur die erkannten Zahlen werden übernommen.",
     guideNote:
-      "Ohne Befehl werden zwei Zahlen als Zielkoordinate übernommen. Nach „Ziel“ oder „Artillerie“ werden die nächsten zwei Zahlen als X und Y übernommen.",
+      "Ohne Befehl werden die ersten zwei erkannten Zahlen als Zielkoordinate übernommen. Nach „Ziel“ oder „Artillerie“ werden die nächsten zwei Zahlen übernommen.",
   },
   en: {
     artillery: "Artillery",
@@ -166,7 +168,9 @@ export const translate = {
     autoOff: "🔊 AUTO: OFF",
     speechStatus: "SPEECH STATUS",
     speechOff: "🎤 Voice control OFF",
-    speechHint: "Say, for example, “67 81” for the target or “target”, then “67 81”.",
+    speechFormat: "RECOMMENDED VOICE FORMAT",
+    speechFormatExample: "X 67 · Y 81",
+    speechFormatHint: "Say X and Y as separators. Only the numbers are used.",
     guide: "VOICE COMMANDS & NUMBER FORMATS",
     step: "Step by step:",
     both: "Both coordinates:",
@@ -174,15 +178,15 @@ export const translate = {
     targetGuide: "Target:",
     actions: "Actions:",
     numbers: "Numbers:",
-    guideStep: "“Target” → “67 81” or “artillery” → “45 32”",
-    guideBoth: "“Artillery 45 32, target 67 81”",
+    guideStep: "“Target” → “X 67 Y 81” or “artillery” → “X 45 Y 32”",
+    guideBoth: "“Artillery X 45 Y 32, target X 67 Y 81”",
     guideArtillery:
-      "“Artillery 45 32”, “gun 45 32”, “cannon 45 32” or “source 45 32”",
-    guideTarget: "“Target 67 81”",
+      "“Artillery X 45 Y 32”, “gun X 45 Y 32”, “cannon X 45 Y 32” or “source X 45 Y 32”",
+    guideTarget: "“Target X 67 Y 81”",
     guideActions: "“Calculate”, “result”, “read”, “reset” and “stop”",
     guideNumbers:
-      "45 32, “forty five thirty two” or decimals such as “45 point 32”",
+      "Use “X 45 Y 32” for a clear separator. Letters are ignored; only recognized numbers are used.",
     guideNote:
-      "Without a command, two numbers are used as the target coordinates. After “target” or “artillery”, the next two numbers are used as X and Y.",
+      "Without a command, the first two recognized numbers are used as the target coordinates. After “target” or “artillery”, the next two numbers are used.",
   },
 } as const;

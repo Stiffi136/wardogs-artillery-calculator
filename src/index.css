@@ -351,6 +351,33 @@ footer {
   color: #bcc7b8;
   font-size: 1rem;
 }
+.coordinate-format {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 10px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: #111610;
+  border: 1px solid #3d4b36;
+  border-radius: 3px;
+}
+.coordinate-format span {
+  color: #a8b3a5;
+  font: 700 0.7rem "Barlow Condensed", sans-serif;
+  letter-spacing: 0.11em;
+}
+.coordinate-format code {
+  color: #d7f05b;
+  font: 700 1.05rem/1 "Barlow Condensed", sans-serif;
+  letter-spacing: 0.08em;
+}
+.coordinate-format small {
+  grid-column: 1 / -1;
+  color: #bcc7b8;
+  font-size: 0.82rem;
+}
+
 .model-progress {
   margin-top: 14px;
 }

@@ -22,14 +22,14 @@ Select English or German in the application, then start voice control and allow 
 
 English voice-command examples:
 
-- `Artillery 45 32, target 67 81`
-- `Gun 45 32 target 67 81`
-- `Artillery 45 32`
-- `Target 67 81`
-- `67 81` — without a command, this is used as the target coordinate
+- `Artillery X 45 Y 32, target X 67 Y 81`
+- `Gun X 45 Y 32 target X 67 Y 81`
+- `Artillery X 45 Y 32`
+- `Target X 67 Y 81`
+- `X 67 Y 81` — without a command, this is used as the target coordinate
 - `Calculate`, `result`, `read`, `reset`, or `stop`
 
-You can also give coordinates step by step: say `target`, then `67 81`; or say `artillery`, then `45 32`. Number words and decimal values such as `forty five thirty two` and `45 point 32` are supported. Incomplete coordinate pairs are ignored.
+For reliable separation, say coordinates with their axes: `X 67 Y 81`. The parser ignores surrounding letters and uses the recognized numbers, so `x67 y81` works too. You can also give coordinates step by step: say `target`, then `X 67 Y 81`; or say `artillery`, then `X 45 Y 32`. Number words and decimal values such as `forty five thirty two` and `45 point 32` are supported. Incomplete coordinate pairs are ignored.
 
 Voice control requires a modern browser with microphone access, Web Workers, Web Audio, and Speech Synthesis. WebGPU is preferred; if it is unavailable, Transformers.js uses WASM/CPU instead. The first Whisper download is about 300 MB, so loading may take some time depending on the device and connection.
 

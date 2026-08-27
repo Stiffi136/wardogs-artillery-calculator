@@ -359,7 +359,7 @@ function App() {
       ? language === "en"
         ? "The initial model download and setup can take a few minutes. Keep this page open."
         : "Der erste Modell-Download und die Initialisierung können einige Minuten dauern. Bitte diese Seite geöffnet lassen."
-      : t.speechHint;
+      : null;
   return (
     <main className="app-shell">
       <header>
@@ -401,7 +401,12 @@ function App() {
       >
         <span>{t.speechStatus}</span>
         <strong>{speechOn || modelLoading ? status : t.speechOff}</strong>
-        <p>{dialogueHint}</p>
+        {dialogueHint && <p>{dialogueHint}</p>}
+        <div className="coordinate-format">
+          <span>{t.speechFormat}</span>
+          <code>{t.speechFormatExample}</code>
+          <small>{t.speechFormatHint}</small>
+        </div>
         {modelLoading && modelProgress !== null && (
           <div className="model-progress" aria-label="Modell-Downloadfortschritt">
             <div className="model-progress-head">

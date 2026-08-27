@@ -79,6 +79,10 @@ function wordNumber(word: string): number | undefined {
 export function parseNumbers(text: string): number[] {
   const normalized = text
     .toLowerCase()
+    // Keep any digits even when Whisper joins them to labels or other words
+    // (for example "x67 y81"). This lets the command parser use every
+    // numeric value in the transcript while number words still work below.
+    .replace(/[\p{L}]+(?=\d)|(?<=\d)[\p{L}]+/gu, "")
     // Whisper can render two spoken numbers as a hyphenated pair ("10-20").
     // Only split a hyphen between digits, preserving negative values ("-10").
     .replace(/(\d)-(\d)/g, "$1 $2")
